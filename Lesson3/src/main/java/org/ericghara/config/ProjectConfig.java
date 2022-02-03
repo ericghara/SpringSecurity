@@ -32,7 +32,6 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .mvcMatchers("/adduser").permitAll()
-                .mvcMatchers("/hello").authenticated()
                 .anyRequest().authenticated();
     }
 
