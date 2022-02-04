@@ -1,8 +1,8 @@
 package org.ericghara.security.filters;
 
 import org.ericghara.security.authentication.CustomAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -18,10 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class CustomAuthenticationFilter extends OncePerRequestFilter {
+public class CustomAuthenticationFilter extends OncePerRequestFilter implements ApplicationListener<ApplicationStartedEvent> {
 
-    @Autowired
-    private ApplicationContext appContext;
     private AuthenticationManager authenticationManager; // note initially null
 
     @Override
@@ -46,9 +44,12 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    // Allows setting AuthenticationManager after bean definitions
-    // To resolve a circular dependency.
-    public void setAuthenticationManager() {
-        this.authenticationManager = appContext.getBean(AuthenticationManager.class);
+    /*Allows for class instantiation without initializing the authentication manager.
+    * This resolves a circular dependency for the authentication manager.
+     */
+    @Override
+    public void onApplicationEvent(ApplicationStartedEvent event) {
+        this.authenticationManager = event.getApplicationContext()
+                                          .getBean(AuthenticationManager.class);
     }
 }

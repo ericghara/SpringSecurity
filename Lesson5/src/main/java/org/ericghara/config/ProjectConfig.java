@@ -3,10 +3,8 @@ package org.ericghara.config;
 import org.ericghara.security.filters.CustomAuthenticationFilter;
 import org.ericghara.security.providers.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,12 +38,6 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
-    @EventListener(value=ApplicationStartedEvent.class)
-    public void configFilter() {
-        filter.setAuthenticationManager();  // wait to inject AuthenticationManager to avoid circular dependency
-    }
-
 }
 
 
