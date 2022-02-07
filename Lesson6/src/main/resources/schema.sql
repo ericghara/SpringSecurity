@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS UserPass, otp CASCADE;
+
+CREATE TABLE UserPass(
+	id SERIAL NOT NULL,
+	username VARCHAR(45) NOT null UNIQUE,
+	password VARCHAR(45),
+	authorities VARCHAR(100),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE Otp(
+	FK_UserPass_id INTEGER NOT NULL REFERENCES UserPass(id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	otp VARCHAR(4),
+	PRIMARY KEY(FK_UserPass_id)
+);
