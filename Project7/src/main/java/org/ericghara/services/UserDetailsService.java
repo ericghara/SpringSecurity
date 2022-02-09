@@ -1,20 +1,20 @@
 package org.ericghara.services;
 
+import org.ericghara.entities.User;
 import org.ericghara.repositories.UserRepository;
 import org.ericghara.security.model.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class JpaUserDetailsService implements UserDetailsService {
+public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public JpaUserDetailsService(UserRepository userRepository) {
+    public UserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -29,5 +29,9 @@ public class JpaUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public int getIdByUsername(String username) throws UsernameNotFoundException {
         return loadUserByUsername(username).getId();
+    }
+    
+    public SecurityUser getUserDetails(User user) {
+        return new SecurityUser(user);
     }
 }

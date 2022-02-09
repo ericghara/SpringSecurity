@@ -15,12 +15,12 @@ import java.util.UUID;
 public class OtpService {
 
     private final int OTP_LENGTH = 4;
-    private final JpaUserDetailsService jpaUserDetailsService;
+    private final UserDetailsService userDetailsService;
     private final OtpRepository otpRepository;
     private final Random random;
 
-    public OtpService(JpaUserDetailsService jpaUserDetailsService, OtpRepository otpRepository) {
-        this.jpaUserDetailsService = jpaUserDetailsService;
+    public OtpService(UserDetailsService userDetailsService, OtpRepository otpRepository) {
+        this.userDetailsService = userDetailsService;
         this.otpRepository = otpRepository;
         random = new Random();
     }
@@ -42,7 +42,7 @@ public class OtpService {
     }
 
     public Otp getOtp(String username) {
-        int id = jpaUserDetailsService.getIdByUsername(username);
+        int id = userDetailsService.getIdByUsername(username);
         return getOtp(id);
     }
 
@@ -63,12 +63,10 @@ public class OtpService {
     }
 
     @Transactional
-    public void generateOtp(Authentication validAuth) {
-        String username = validAuth.getName();
-        int id = jpaUserDetailsService.getIdByUsername(username);
-        Otp otpEntity = new Otp();
-        otpEntity.setId(id);
-        otpEntity.setOtp(newOtp() );
+    public void generateOtp(Authentication authentication) {
+        String username = authentication.getName();
+        int id = userDetailsService.getIdByUsername(username);
+        Otp otpEntity = new Otp(id, newOtp());
         otpRepository.save(otpEntity);
     }
 }

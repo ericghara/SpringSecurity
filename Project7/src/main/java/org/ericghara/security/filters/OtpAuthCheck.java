@@ -25,24 +25,27 @@ public class OtpAuthCheck extends UsernamePasswordAuthCheck {
         super(authenticationManager, otpService);
     }
 
-    void doAuthentication(HttpServletRequest request,
+    Authentication doAuthentication(HttpServletRequest request,
                           HttpServletResponse response,
-                          Authentication authentication) {
+                          Authentication toAuthenticate) throws BadCredentialsException {
+        Authentication validAuth;
         try {
-            authentication = authenticationManager.authenticate(authentication);
+            validAuth = authenticationManager.authenticate(toAuthenticate);
         } catch (BadCredentialsException e) {
-            onFailure(e, authentication, response);
-            return;
+            onFailure(e, toAuthenticate, response);
+            return toAuthenticate;
         }
-        onSuccess(authentication, response);
+        onSuccess(validAuth, response);
+        return validAuth;
     }
 
     @Override
-    public void authenticate(HttpServletRequest request,
+    public Authentication authenticate(HttpServletRequest request,
                              HttpServletResponse response) {
         Authentication authentication = new OtpAuthentication(USERNAME.valueIn(request), OTP.valueIn(request) );
-        doAuthentication(request, response, authentication);
+        var validAuth = doAuthentication(request, response, authentication);
         otpService.clearOtp(authentication.getName() );
+        return validAuth;
     }
 
     @Override

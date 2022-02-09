@@ -31,24 +31,24 @@ public class UsernamePasswordAuthCheck
         this.otpService = otpService;
     }
 
-    void doAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            Authentication a) {
+    Authentication doAuthentication(HttpServletResponse response,
+                          Authentication a) {
+        Authentication validAuth;
         try {
-            a = authenticationManager.authenticate(a);
+            validAuth = authenticationManager.authenticate(a);
         } catch (BadCredentialsException e) {
             onFailure(e, a, response);
-            return;
+            return null;
         }
         onSuccess(a, response);
+        return  validAuth;
     }
 
     @Override
-    public void authenticate(HttpServletRequest request,
+    public Authentication authenticate(HttpServletRequest request,
                              HttpServletResponse response) {
         Authentication a = new UsernamePasswordAuthentication(USERNAME.valueIn(request), PASSWORD.valueIn(request) );
-        doAuthentication(request, response, a);
-
+        return doAuthentication(response, a);
     }
 
     @Override
