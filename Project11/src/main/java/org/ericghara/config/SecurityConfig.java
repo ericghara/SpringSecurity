@@ -1,4 +1,4 @@
-package org.ericghara.configuration;
+package org.ericghara.config;
 
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -41,7 +41,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/customers")
+                .antMatchers("/customers", "/api/**", "/logout")
                 .hasRole("read")
                 .anyRequest()
                 .permitAll();

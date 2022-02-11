@@ -7,22 +7,24 @@
       <h1>
         Hello, <span th:text="${username}">--name--</span>.
       </h1>
-      <table class="table table-striped">
+      <table class="table table-striped" id="customer-table">
         <thead>
-        </thead>
-        <tbody>
         <tr>
           <th>ID</th>
           <th>Name</th>
           <th>Address</th>
           <th>Service Rendered</th>
         </tr>
+      </thead>
+      <tbody>
         <tr th:each="customer : ${customers}">
           <td th:text="${customer.id}">Text ...</td>
           <td th:text="${customer.name}">Text ...</td>
           <td th:text="${customer.address}">Text ...</td>
           <td th:text="${customer.serviceRendered}">Text...</td>
         </tr>
+      </tbody>
+      <tfoot>
         <tr>
           <th>
           </th>
@@ -41,11 +43,9 @@
           </div>
           </th>
         </tr>
-        </tbody>
+      </tfoot>
       </table>
-
-      <a href='/api/get_customers'>Get Customers</a>
-
+      
       <button onclick="postIt('/api/logout')">Logout</button>
 
       <div id="pagefoot" th:include="layout :: footerFragment" style="margin-top:2%;">Footer
@@ -80,14 +80,16 @@
         function handleFormSubmit(event) {
             event.preventDefault();
 
-            var data = new FormData(event.target);
+            const form = event.target;
+            var data = new FormData(form);
             const formJSON = Object.fromEntries(data.entries());
+            form.reset()
 
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = () => {
                 if(xhr.readyState == 4) {
                     if (xhr.status == 202) {
-                        location.reload();
+                        tableRedraw();
                     }
                     else if (xhr.status == 400) {
                         location.href="/bad_request";
@@ -99,6 +101,27 @@
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify(formJSON, null, 2) );
+            }
+
+            async function tableRedraw() {
+              const table = document.getElementById("customer-table");
+              const oldBody = table.getElementsByTagName("tbody")[0];
+              const newBody = document.createElement("tbody");
+              const customers = await fetch("/api/get_customers");
+              const customersJson = await customers.json();
+              const keys = ['id','name','serviceRendered', 'address'];
+
+              for (let i in customersJson) {
+                let row = newBody.insertRow();
+                let customer = customersJson[i];
+                for (let j in keys) {
+                  let key = keys[j];
+                  let cell = row.insertCell();
+                  let text = document.createTextNode(customer[key])
+                  cell.appendChild(text);
+                }
+              } 
+              table.replaceChild(newBody, oldBody);
             }
 
           const form = document.getElementById("new-customer-form");
