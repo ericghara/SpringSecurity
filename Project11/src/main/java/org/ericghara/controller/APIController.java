@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping(value="/api")
@@ -34,5 +36,11 @@ public class APIController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
         response.setStatus(HttpServletResponse.SC_ACCEPTED);
+    }
+
+    @GetMapping("/get_customers")
+    @ResponseBody
+    public List<Customer> getCustomers() {
+        return customerService.findAll();
     }
 }

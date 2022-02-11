@@ -24,27 +24,27 @@
           <td th:text="${customer.serviceRendered}">Text...</td>
         </tr>
         <tr>
-          <section class="new-customer-form">
-            <form enctype='application/plain'>
-              <th>
-              </th>
-              <th>
-                <input id="name" name="name" value="">
-              </th>
-              <th>
-                <input id="address" name="address" value=""><br>
-              </th>
-              <th style="width:100%">
-                <div>
-                <input id="serviceRendered" name="serviceRendered" value="">
-                <button type="submit" style="margin-left:12px">Add Customer</button>
-              </div>
-            </th>
+          <th>
+          </th>
+          <th>
+            <form id="new-customer-form"  enctype='application/plain'>
+              <input form="new-customer-form" id="name" name="name" value="">
             </form>
-          </section>
+          </th>
+          <th>
+            <input form="new-customer-form" id="address" name="address" value=""><br>
+          </th>
+          <th style="width:100%">
+            <div>
+            <input form="new-customer-form" id="serviceRendered" name="serviceRendered" value="">
+            <button form="new-customer-form" type="submit" style="margin-left:12px">Add Customer</button>
+          </div>
+          </th>
         </tr>
         </tbody>
       </table>
+
+      <a href='/api/get_customers'>Get Customers</a>
 
       <button onclick="postIt('/api/logout')">Logout</button>
 
@@ -101,7 +101,7 @@
             xhr.send(JSON.stringify(formJSON, null, 2) );
             }
 
-          const form = document.querySelector('.new-customer-form');
+          const form = document.getElementById("new-customer-form");
           form.addEventListener('submit', handleFormSubmit);
     </script>
   </body>
