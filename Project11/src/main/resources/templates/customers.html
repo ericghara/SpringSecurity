@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:include="layout :: headerFragment">
+  </head>
+  <body style="margin-left:1%;margin-right:1%;">
+    <div id="container">
+      <h1>
+        Hello, <span th:text="${username}">--name--</span>.
+      </h1>
+      <table class="table table-striped">
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Service Rendered</th>
+        </tr>
+        <tr th:each="customer : ${customers}">
+          <td th:text="${customer.id}">Text ...</td>
+          <td th:text="${customer.name}">Text ...</td>
+          <td th:text="${customer.address}">Text ...</td>
+          <td th:text="${customer.serviceRendered}">Text...</td>
+        </tr>
+        <tr>
+          <section class="new-customer-form">
+            <form enctype='application/plain'>
+              <th>
+              </th>
+              <th>
+                <input id="name" name="name" value="">
+              </th>
+              <th>
+                <input id="address" name="address" value=""><br>
+              </th>
+              <th style="width:100%">
+                <div>
+                <input id="serviceRendered" name="serviceRendered" value="">
+                <button type="submit" style="margin-left:12px">Add Customer</button>
+              </div>
+            </th>
+            </form>
+          </section>
+        </tr>
+        </tbody>
+      </table>
+
+      <button onclick="postIt('/api/logout')">Logout</button>
+
+      <div id="pagefoot" th:include="layout :: footerFragment" style="margin-top:2%;">Footer
+      </div>
+    </div>
+  <!-- container -->
+    <script th:inline="javascript">
+
+
+        function getCsrfToken() {
+          return document.querySelector("meta[name='csrf-token']").content;
+        }
+
+        function postIt(dest) {          
+          var xhr = new XMLHttpRequest();
+
+          xhr.onreadystatechange = () => {
+              if(xhr.readyState == 4) {
+                  if (xhr.status == 202) {
+                      location.href="http://localhost:8888"
+                  }
+                  else if (xhr.status == 400) {
+                      location.href="/bad_request";
+                  }
+              }
+          };
+          xhr.open("POST", dest);
+          xhr.setRequestHeader("x-csrf-token", getCsrfToken() );
+          xhr.send();           
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            var data = new FormData(event.target);
+            const formJSON = Object.fromEntries(data.entries());
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = () => {
+                if(xhr.readyState == 4) {
+                    if (xhr.status == 202) {
+                        location.reload();
+                    }
+                    else if (xhr.status == 400) {
+                        location.href="/bad_request";
+                    }
+                }
+            };
+            xhr.open("POST", "/api/addcustomer");
+            xhr.setRequestHeader("x-csrf-token", getCsrfToken() );
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(formJSON, null, 2) );
+            }
+
+          const form = document.querySelector('.new-customer-form');
+          form.addEventListener('submit', handleFormSubmit);
+    </script>
+  </body>
+</html>
