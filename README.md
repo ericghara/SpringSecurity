@@ -9,4 +9,6 @@
     <li><b>Lesson 6: </b> Implementation of 2FA (username/password, username/otp) using a custom authentication filter.</li>
     <li><b>Project 7:</b> A more developed 2FA implementation using database stores of timestamped otps and authentication tokens</li>
     <li><b>Project 9:</b> Basic csrf secured post mapped endpoint and very basic custom csrf repository and filter</li>
+    <li><b>Project 10:</b> Implementation of CORS for a simple endpoint</li>
+    <li><b>Project 11:</b> An OAuth2 secured CRUD client using a Keycloak authorization server</li>
 </ul>

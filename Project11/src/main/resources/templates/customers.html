@@ -45,7 +45,7 @@
         </tr>
       </tfoot>
       </table>
-      
+
       <button onclick="postIt('/api/logout')">Logout</button>
 
       <div id="pagefoot" th:include="layout :: footerFragment" style="margin-top:2%;">Footer
@@ -65,10 +65,13 @@
           xhr.onreadystatechange = () => {
               if(xhr.readyState == 4) {
                   if (xhr.status == 202) {
-                      location.href="http://localhost:8888"
+                      location.href="/"
                   }
                   else if (xhr.status == 400) {
                       location.href="/bad_request";
+                  }
+                  else if (xhr.status == 401 || xhr.status == 403) {
+                      location.href="/";
                   }
               }
           };
@@ -89,10 +92,13 @@
             xhr.onreadystatechange = () => {
                 if(xhr.readyState == 4) {
                     if (xhr.status == 202) {
-                        tableRedraw();
+                      tableRedraw();
                     }
                     else if (xhr.status == 400) {
-                        location.href="/bad_request";
+                      location.href="/bad_request";
+                    }
+                    else if (xhr.status == 401 || xhr.status == 403) {
+                      location.href="/";
                     }
                 }
             };
